@@ -36,6 +36,15 @@ type TDeleteBoardAction = {
   boardId: string;
 };
 
+type TSortAction = {
+  boardIndex: number;
+  droppableIdStart: string;
+  droppableIdEnd: string;
+  droppableIndexStart: number;
+  droppableIndexEnd: number;
+  draggableId: string;
+};
+
 const initialState: TBoardsState = {
   modalActive: false,
   boardArray: [
@@ -153,8 +162,56 @@ const boardsSlice = createSlice({
     setModalActive: (state, { payload }: PayloadAction<boolean>) => {
       state.modalActive = payload;
     },
+    // sort: (state, { payload }: PayloadAction<TSortAction>) => {
+    //   // 같은 리스트 구역안에 있을때
+    //   if (payload.droppableIdStart === payload.droppableIdEnd) {
+    //     const list = state.boardArray[payload.boardIndex].lists.find((list) => list.listId === payload.droppableIdStart);
+
+    //     // 변경시키려는 아이템을 배열에서 지워줍니다.
+    //     // return 값으로 지워진 아이템을 잡아줍니다.
+    //     const card = list?.tasks.splice(payload.droppableIndexStart, 1);
+
+    //     list?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
+
+    //     if (payload.droppableIdStart !== payload.droppableIdEnd) {
+    //       const listStart = state.boardArray[payload.boardIndex].lists.find((list) => list.listId === payload.droppableIdStart);
+
+    //       const card = listStart!.tasks.splice(payload.droppableIndexStart, 1);
+
+    //       const listEnd = state.boardArray[payload.boardIndex].lists.find((list) => list.listId === payload.droppableIdEnd);
+    //       listEnd?.tasks.splice(payload.droppableIndexEnd, 0, ...card!);
+    //     }
+    //   }
+    // },
+    sort: (state, { payload }: PayloadAction<TSortAction>) => {
+      const { boardIndex, droppableIdStart, droppableIdEnd, droppableIndexStart, droppableIndexEnd } = payload;
+
+      const board = state.boardArray[boardIndex];
+
+      // 같은 리스트 내에서 이동
+      if (droppableIdStart === droppableIdEnd) {
+        const list = board.lists.find((list) => list.listId === droppableIdStart);
+
+        if (list) {
+          const [movedTask] = list.tasks.splice(droppableIndexStart, 1);
+          list.tasks.splice(droppableIndexEnd, 0, movedTask);
+        }
+      } else {
+        // 다른 리스트로 이동
+        const listStart = board.lists.find((list) => list.listId === droppableIdStart);
+        const listEnd = board.lists.find((list) => list.listId === droppableIdEnd);
+
+        if (listStart && listEnd) {
+          // 이동할 항목 제거
+          const [movedTask] = listStart.tasks.splice(droppableIndexStart, 1);
+
+          // 새 리스트에 항목 추가
+          listEnd.tasks.splice(droppableIndexEnd, 0, movedTask);
+        }
+      }
+    },
   },
 });
 
-export const { addBoard, deleteBoard, deleteList, setModalActive, addList, addTask, updateTask, deleteTask } = boardsSlice.actions;
+export const { sort, addBoard, deleteBoard, deleteList, setModalActive, addList, addTask, updateTask, deleteTask } = boardsSlice.actions;
 export const boardsReducer = boardsSlice.reducer;
