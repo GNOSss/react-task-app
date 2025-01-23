@@ -1,4 +1,4 @@
-import { appContainer, board, buttons, deleteBoardButton, loggerButton } from './APP.css';
+import { appContainer, board, buttons, deleteBoardButton, loggerButton } from '../public/style/APP.css';
 import BoardList from './components/BoardList/BoardList';
 import { useState } from 'react';
 import ListsContainer from './components/ListsContainer/ListsContainer';

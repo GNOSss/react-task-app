@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { vars } from '../../APP.css';
+import { vars } from '../../../public/style/APP.css';
 
 export const listWarpper = style({
   display: 'flex',
