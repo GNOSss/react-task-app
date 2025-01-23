@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
 import DropDownForm from './DropDownForm/DropDownForm';
 import { IoIosAdd } from 'react-icons/io';
